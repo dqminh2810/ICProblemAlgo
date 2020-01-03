@@ -66,15 +66,17 @@ public class Graphe {
 
 
     /**
-     * Vérifier et ajouter une arête entre deux sommets
+     * Vérifier et ajouter une arête entre deux sommets.
+     * -1 il n'y pas d'arête entre deux sommets
+     * 1 il existe une arête entre deux sommets
      * @param s1 Premier sommet
      * @param s2 Deuxième sommet
      * @return Nothing
      */
     public void ajouter_arete(Sommet s1, Sommet s2){
-        if(this.aretes_tab[s1.getValue()][ s2.getValue()]==-1){
-            this.aretes_tab[s1.getValue()][ s2.getValue()] = 1;
-            this.aretes_tab[s2.getValue()][ s1.getValue()] = 1;
+        if(this.aretes_tab[s1.getValue()][ s2.getValue()]==-1){     //On vérifie si une arête avec ces sommets existe déjà
+            this.aretes_tab[s1.getValue()][ s2.getValue()] = 1;     //On ajoute l'arête entre les deux sommets
+            this.aretes_tab[s2.getValue()][ s1.getValue()] = 1;     //On ajoute également l'arête symétrique
         }
     }
 
@@ -85,15 +87,14 @@ public class Graphe {
      * @version: 1.0
      */
     public void buildGraphe(ArrayList<Composante> composantes){
-        Sommet precedent = new Sommet(-1);
-        for(Composante c: composantes){
-            for(Sommet s: c.getSommets()){
-                if(precedent.getValue()!=-1){
-                    this.ajouter_arete(precedent, s);
-                }
-                precedent.setValue(s.getValue());
+        Sommet precedent = new Sommet(-1);  //precedent permet de garder en mémoire le sommet précédent
+        for(Composante c: composantes){          //On itère sur chacune des composantes
+            for(Sommet s: c.getSommets()){      //On itère sur chacun des sommets d'une composante
+                if(precedent.getValue()!=-1)  //Dans le cas où le sommet actuel est le 1er, on ne fait rien
+                    this.ajouter_arete(precedent, s);   //On ajoute l'arête entre le sommet actuel et le précédent
+                precedent.setValue(s.getValue());   //On garde le sommet actuel en mémoire pour le prochain sommet
             }
-            precedent.setValue(-1);
+            precedent.setValue(-1); //On réinitialise precedent avant de changer de composante
         }
     }
 
@@ -104,15 +105,17 @@ public class Graphe {
      * @version: 2.0
      */
     public void buildGraphe2(ArrayList<Composante> composantes){
-        for(Composante c: composantes){
+        for(Composante c: composantes){         //On itère sur chacune des composantes
             int length = c.getSommets().size();
-            if(length > 1){
-                for(int i=1; i<length; i++){
-                    boolean au_moins_une = false;
+            if(length > 1){                     //Dans le cas où une composante ne possède qu'un sommet, on ne fait rien
+                for(int i=1; i<length; i++){    //On itère à partir de l'indice 1 pour ne pas prendre le 1er sommet
+                    boolean au_moins_une = false;   //Boolean de vérification si une arête avec ce sommet existe déjà
                     for(int j=0; j<i; j++){
+                        //On vérifie si une arête avec ces sommets existe déjà
                         if(aretes_tab[c.getSommets().get(i).getValue()][c.getSommets().get(j).getValue()] == 1)
                             au_moins_une = true;
                     }
+                    //S'il n'y a pas d'arête existance avec ces sommets, on l'ajoute
                     if(!au_moins_une)
                         this.ajouter_arete(c.getSommets().get(i), c.getSommets().get(i-1));
                 }
