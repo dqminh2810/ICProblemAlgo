@@ -5,7 +5,8 @@ public class Main {
 
     public static void main(String[] args) {
         testExample();
-        testRandom(2, 4);
+        testExample2();
+        //testRandom(10, 20);
     }
 
     /**
@@ -32,16 +33,7 @@ public class Main {
                 composantes.add(c);
             }
             // Afficher informations ce qu'on vient de créer
-            System.out.println("Vous venez de créer "+ t +" sous-ensembles, chacun contient "+ p +" sommets");
-            for (Composante c: composantes){
-                System.out.print("[");
-                for(Sommet s: c.getSommets()){
-                    if(c.getSommets().lastIndexOf(s) == c.getSommets().size()-1)
-                        System.out.print(s.getValue());
-                    else System.out.print(s.getValue()+", ");
-                }
-                System.out.println("]");
-            }
+            showComposantes(composantes);
             return composantes;
         }
     }
@@ -58,7 +50,6 @@ public class Main {
         Sommet s5 = new Sommet(5);
         Sommet s6 = new Sommet(6);
         Sommet s7 = new Sommet(7);
-        Sommet s8 = new Sommet(8);
         ArrayList<Sommet> sommets1 = new ArrayList<>();
         ArrayList<Sommet> sommets2 = new ArrayList<>();
         ArrayList<Sommet> sommets3 = new ArrayList<>();
@@ -89,20 +80,75 @@ public class Main {
         composantes.add(c4);
         Graphe g = new Graphe();
 
+        showComposantes(composantes);
+        System.out.println();
+        System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(6, 5, composantes));
+        System.out.println("Etant donnée k=9, delta=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(9, 6, composantes));
+        System.out.println("Etant donnée k=9, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(9, 7, composantes));
+        System.out.println("Etant donnée k=10, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(10, 7, composantes));
+        System.out.println();
+
         g.buildGraphe(composantes);
-        System.out.println("Vous venez de créer "+ composantes.size() +" sous-ensembles");
-        for (Composante c: composantes){
-            System.out.print("[");
-            for(Sommet s: c.getSommets()){
-                if(c.getSommets().lastIndexOf(s) == c.getSommets().size()-1)
-                    System.out.print(s.getValue());
-                else System.out.print(s.getValue()+", ");
-            }
-            System.out.println("]");
-        }
         System.out.print(g.toString());
-        System.out.println("Etant donnée k=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem(6));
-        System.out.println("Etant donnée k=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem(7));
+        System.out.println();
+        System.out.println("****************************************************************");
+        System.out.println();
+    }
+
+    /**
+     * Tester en utilisant l'autre  example
+     */
+    public static void testExample2(){
+        //SOMMETS
+        Sommet s1 = new Sommet(1);
+        Sommet s2 = new Sommet(2);
+        Sommet s3 = new Sommet(3);
+        Sommet s4 = new Sommet(4);
+        Sommet s5 = new Sommet(5);
+        Sommet s6 = new Sommet(6);
+        Sommet s7 = new Sommet(7);
+        Sommet s8 = new Sommet(8);
+        ArrayList<Sommet> sommets1 = new ArrayList<>();
+        ArrayList<Sommet> sommets2 = new ArrayList<>();
+        ArrayList<Sommet> sommets3 = new ArrayList<>();
+        ArrayList<Sommet> sommets4 = new ArrayList<>();
+        sommets1.add(s1);
+        sommets1.add(s2);
+        sommets1.add(s3);
+        sommets2.add(s2);
+        sommets2.add(s3);
+        sommets2.add(s4);
+        sommets3.add(s3);
+        sommets3.add(s4);
+        sommets3.add(s5);
+        sommets4.add(s3);
+        sommets4.add(s4);
+        sommets4.add(s6);
+        sommets4.add(s7);
+        // COMPOSANTES
+        Composante c1 = new Composante(sommets1);
+        Composante c2 = new Composante(sommets2);
+        Composante c3 = new Composante(sommets3);
+        Composante c4 = new Composante(sommets4);
+
+        ArrayList<Composante> composantes = new ArrayList<>();
+        composantes.add(c1);
+        composantes.add(c2);
+        composantes.add(c3);
+        composantes.add(c4);
+        Graphe g = new Graphe();
+
+        showComposantes(composantes);
+
+        System.out.println();
+        System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(6, 5, composantes));
+        System.out.println("Etant donnée k=9, delta=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(9, 6, composantes));
+        System.out.println("Etant donnée k=9, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(9, 7, composantes));
+        System.out.println("Etant donnée k=10, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(10, 7, composantes));
+        System.out.println();
+
+        g.buildGraphe(composantes);
+        System.out.print(g.toString());
         System.out.println();
         System.out.println("****************************************************************");
         System.out.println();
@@ -120,5 +166,21 @@ public class Main {
         System.out.println();
         System.out.println("****************************************************************");
         System.out.println();
+    }
+
+    /**
+     * Afficher les composantes créées
+     */
+    public static void showComposantes(ArrayList<Composante> composantes){
+        System.out.println("Vous venez de créer "+ composantes.size() +" sous-ensembles");
+        for (Composante c: composantes){
+            System.out.print("[");
+            for(Sommet s: c.getSommets()){
+                if(c.getSommets().lastIndexOf(s) == c.getSommets().size()-1)
+                    System.out.print(s.getValue());
+                else System.out.print(s.getValue()+", ");
+            }
+            System.out.println("]");
+        }
     }
 }

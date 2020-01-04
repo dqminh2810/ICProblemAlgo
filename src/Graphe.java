@@ -1,7 +1,6 @@
 import org.omg.CORBA.CODESET_INCOMPATIBLE;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 /*
 * L'idée d'un Graphe ici est créer un tableau de 2 dimension où chaque indice est correspondant avec un sommet
@@ -11,59 +10,51 @@ import java.util.Arrays;
 public class Graphe {
 
     private int[][] aretes_tab;
+    private boolean[][] connected;
+    private int nbSommet;
+    private int nbAretes;
+    private int degre;
 
     public Graphe() {
         this.aretes_tab = new int[100][100];
-        for(int i=0; i<100; i++){
-            for(int j=0; j<100; j++){
-                this.aretes_tab[i][j] = -1;
-            }
-        }
+        this.connected = new boolean[100][100];
+        for(int[] arr1 : aretes_tab)
+            Arrays.fill(arr1, -1);
+        for(boolean[] arr1 : connected)
+            Arrays.fill(arr1, false);
+        nbSommet = 0;
+        nbAretes = 0;
+        degre = 0;
     }
 
     public Graphe(int height,int width) {
         this.aretes_tab = new int[height][width];
-        for(int i=0; i<height; i++){
-            for(int j=0; j<width; j++){
-                this.aretes_tab[i][j] = -1;
-            }
-        }
-    }
-
-    public Graphe(int[][] aretes_tab) {
-        this.aretes_tab = aretes_tab;
+        this.connected = new boolean[height][width];
+        for(int[] arr1 : aretes_tab)
+            Arrays.fill(arr1, -1);
+        for(boolean[] arr1 : connected)
+            Arrays.fill(arr1, false);
+        nbSommet = 0;
+        nbAretes = 0;
+        degre = 0;
     }
 
     /**
      * Vérifier si il y a de solution pour le probleme IC
      * @param k Nombre maximum d'arête
+     * @param delta Degré maximum
      * @param composantes des sous-ensemble qui contient des sommets
      * @return Nothing
      */
-    public boolean checkICProblem(int k, ArrayList<Composante> composantes){
-        int n = 0;
-        for(Composante c: composantes){
-            n+=c.getSommets().size()-1;
-        }
-        return n<=k;
-    }
+    public boolean checkICProblem_Decision(int k, int delta, ArrayList<Composante> composantes){
+        int kMin=0, kMax=0, deltaMin=0, deltaMax=0;
+        //Check k value
+        kMax = calculerNbAretesMax(composantes);
+        //Check delta value
+        deltaMax = calculerDegreeMax(composantes);
 
-    public boolean checkICProblem(int k){
-        ArrayList check_tab = new ArrayList();
-        boolean[][] connected = new boolean[this.aretes_tab.length][this.aretes_tab[0].length];
-        for(boolean[] arr1 : connected)
-            Arrays.fill(arr1, false);
-        for(int i=0; i<this.aretes_tab.length; i++) {
-            for (int j = 0; j < this.aretes_tab[i].length; j++) {
-                if(this.aretes_tab[i][j]==1 && !connected[j][i]){
-                    check_tab.add(this.aretes_tab[i][j]);
-                    connected[i][j] = true;
-                }
-            }
-        }
-        return check_tab.size() <= k;
+        return (k<=kMax && delta<=deltaMax);
     }
-
 
     /**
      * Vérifier et ajouter une arête entre deux sommets.
@@ -96,6 +87,19 @@ public class Graphe {
             }
             precedent.setValue(-1); //On réinitialise precedent avant de changer de composante
         }
+
+        //Handle connected table to avoid duplicate edge
+        for(int i=0; i<this.aretes_tab.length; i++) {
+            for (int j = 0; j < this.aretes_tab[i].length; j++) {
+                if(this.aretes_tab[i][j]==1 && !connected[j][i]){
+                    connected[i][j] = true;
+                }
+            }
+        }
+
+        nbSommet = calculerNbSommet(composantes);
+        nbAretes = calculerNbAretes();
+        degre = calculerDegree();
     }
 
     /**
@@ -121,8 +125,119 @@ public class Graphe {
                 }
             }
         }
+
+        //Handle connected table to avoid duplicate edge
+        for(int i=0; i<this.aretes_tab.length; i++) {
+            for (int j = 0; j < this.aretes_tab[i].length; j++) {
+                if(this.aretes_tab[i][j]==1 && !connected[j][i]){
+                    connected[i][j] = true;
+                }
+            }
+        }
+
+        nbSommet = calculerNbSommet(composantes);
+        nbAretes = calculerNbAretes();
+        degre = calculerDegree();
     }
 
+    /**
+     * Calculer nombre de sommets de ce graphe
+     * @param composantes L'ensemble des composantes afin de créer le graphe
+     * @return int
+     */
+    public int calculerNbSommet(ArrayList<Composante> composantes){
+        //Calculer nombre de sommets à partir des composantes
+        HashMap<Integer, Integer> tmp = new HashMap<>();
+        for(Composante c: composantes){
+            c.getSommets().forEach(s -> {tmp.put(s.getValue(), 0);});
+        }
+
+        return tmp.size();
+    }
+
+    /**
+     * Calculer nombre d'arêtes maximum à parir des composantes données afin de créer un graphe
+     * @return int
+     */
+    public int calculerNbAretes(){
+        int e=0;
+        for(boolean[] arr1: connected){
+            for(boolean b: arr1){
+                if(b) e+=1;
+            }
+        }
+        return e;
+    }
+
+    /**
+     * Calculer nombre d'arêtes de ce graphe
+     * @return int
+     */
+    public int calculerNbAretesMax(ArrayList<Composante> composantes){
+        int kMax=0;
+        for(Composante c: composantes){
+            kMax+=c.getSommets().size()-1;
+        }
+        return kMax;
+    }
+
+    /**
+     * Calculer degré de ce graphe
+     * @return int
+     */
+    public int calculerDegree(){
+        HashMap<Integer, Integer> tmp = new HashMap<>();
+        for(int i: aretes_tab[0]){
+            tmp.put(i, 0);
+        }
+        for(int i=1; i<aretes_tab.length; i++){
+            int total=0;
+            for(int j=1; j<aretes_tab.length; j++){
+                if(aretes_tab[i][j]!=-1){
+                    tmp.put(i, total+=aretes_tab[i][j]);
+                }
+
+            }
+        }
+        return Collections.max(tmp.values());
+    }
+
+    /**
+     * Calculer degré maximum à parir des composantes données afin de créer un graphe
+     * @return int
+     */
+    public int calculerDegreeMax(ArrayList<Composante> composantes){
+        //HashMap <Sommet, Nb Aretes possible>
+        HashMap<Integer, Integer> tmp = new HashMap<>();
+        for(Composante c: composantes){
+            c.getSommets().forEach(s -> {tmp.put(s.getValue(), 0);});
+        }
+
+        int length = tmp.size()+1;
+        int[][] delta_tab = new int[length][length];
+        for(int[] arr1 : delta_tab)
+            Arrays.fill(arr1, 0);
+
+        for(Composante c: composantes){
+            for(Sommet s1: c.getSommets()){
+                for(Sommet s2: c.getSommets()){
+                    if(delta_tab[s2.getValue()][s1.getValue()] == 0 && s1.getValue()!=s2.getValue()){
+                        delta_tab[s1.getValue()][s2.getValue()] = 1;
+                    }
+                }
+            }
+        }
+
+        for(int i=1; i<delta_tab.length; i++){
+            int total=0;
+            for(int j=1; j<delta_tab.length; j++){
+                tmp.put(i, total+=delta_tab[i][j]);
+                tmp.put(i, total+=delta_tab[j][i]);
+            }
+        }
+
+        return Collections.max(tmp.values());
+    }
 
 
     public int[][] getAretes_tab() {
@@ -138,20 +253,17 @@ public class Graphe {
      * @return String
      */
     public String toString(){
-        //Trick to not duplicate edge
-        boolean[][] connected = new boolean[this.aretes_tab.length][this.aretes_tab[0].length];
-        for(boolean[] arr1 : connected)
-            Arrays.fill(arr1, false);
-
         String res = "Vouz venez de créer un graphe à partir des composantes. L'ensemble des arêtes de ce graphe est comme ci-dessous: \n";
         for(int i=0; i<this.aretes_tab.length; i++) {
             for (int j = 0; j < this.aretes_tab[i].length; j++) {
                 if(this.aretes_tab[i][j]==1 && connected[j][i]==false){
                     res+=i+"---"+j+"\n";
-                    connected[i][j] = true;
                 }
             }
         }
+        res+="Total de sommet = "+nbSommet+" --- ";
+        res+="|E| = "+nbAretes+" --- ";
+        res+="Degré = "+degre+"\n";
         return res;
     }
 
