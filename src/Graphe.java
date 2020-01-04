@@ -9,12 +9,13 @@ import java.util.*;
 * */
 public class Graphe {
 
-    private int[][] aretes_tab;
-    private boolean[][] connected;
-    private int nbSommet;
-    private int nbAretes;
-    private int degre;
+    private int[][] aretes_tab; //Tableau contient tous les arêtes existances entre 2 sommets ainsi l'arête symétrique
+    private boolean[][] connected;  //Tableau contient tous les arétes existances entre 2 sommets, ne pas dupliquer l'arête symétrique
+    private int nbSommet;   //Nombre de sommets de ce graphe
+    private int nbAretes;   //Nombre d'arêtess de ce graphe
+    private int degre;      //Degré de ce graphe
 
+    //CONSTRUCTOR
     public Graphe() {
         this.aretes_tab = new int[100][100];
         this.connected = new boolean[100][100];
@@ -37,23 +38,6 @@ public class Graphe {
         nbSommet = 0;
         nbAretes = 0;
         degre = 0;
-    }
-
-    /**
-     * Vérifier si il y a de solution pour le probleme IC
-     * @param k Nombre maximum d'arête
-     * @param delta Degré maximum
-     * @param composantes des sous-ensemble qui contient des sommets
-     * @return Nothing
-     */
-    public boolean checkICProblem_Decision(int k, int delta, ArrayList<Composante> composantes){
-        int kMin=0, kMax=0, deltaMin=0, deltaMax=0;
-        //Check k value
-        kMax = calculerNbAretesMax(composantes);
-        //Check delta value
-        deltaMax = calculerDegreeMax(composantes);
-
-        return (k<=kMax && delta<=deltaMax);
     }
 
     /**
@@ -170,18 +154,6 @@ public class Graphe {
     }
 
     /**
-     * Calculer nombre d'arêtes de ce graphe
-     * @return int
-     */
-    public int calculerNbAretesMax(ArrayList<Composante> composantes){
-        int kMax=0;
-        for(Composante c: composantes){
-            kMax+=c.getSommets().size()-1;
-        }
-        return kMax;
-    }
-
-    /**
      * Calculer degré de ce graphe
      * @return int
      */
@@ -203,52 +175,6 @@ public class Graphe {
     }
 
     /**
-     * Calculer degré maximum à parir des composantes données afin de créer un graphe
-     * @return int
-     */
-    public int calculerDegreeMax(ArrayList<Composante> composantes){
-        //HashMap <Sommet, Nb Aretes possible>
-        HashMap<Integer, Integer> tmp = new HashMap<>();
-        for(Composante c: composantes){
-            c.getSommets().forEach(s -> {tmp.put(s.getValue(), 0);});
-        }
-
-        int length = tmp.size()+1;
-        int[][] delta_tab = new int[length][length];
-        for(int[] arr1 : delta_tab)
-            Arrays.fill(arr1, 0);
-
-        for(Composante c: composantes){
-            for(Sommet s1: c.getSommets()){
-                for(Sommet s2: c.getSommets()){
-                    if(delta_tab[s2.getValue()][s1.getValue()] == 0 && s1.getValue()!=s2.getValue()){
-                        delta_tab[s1.getValue()][s2.getValue()] = 1;
-                    }
-                }
-            }
-        }
-
-        for(int i=1; i<delta_tab.length; i++){
-            int total=0;
-            for(int j=1; j<delta_tab.length; j++){
-                tmp.put(i, total+=delta_tab[i][j]);
-                tmp.put(i, total+=delta_tab[j][i]);
-            }
-        }
-
-        return Collections.max(tmp.values());
-    }
-
-
-    public int[][] getAretes_tab() {
-        return aretes_tab;
-    }
-
-    public void setAretes_tab(int[][] aretes_tab) {
-        this.aretes_tab = aretes_tab;
-    }
-
-    /**
      * Afficher tous les arêtes existant de ce graphe
      * @return String
      */
@@ -267,4 +193,29 @@ public class Graphe {
         return res;
     }
 
+
+    //SETTER AND GETTER
+    public int[][] getAretes_tab() {
+        return aretes_tab;
+    }
+
+    public boolean[][] getConnected() {
+        return connected;
+    }
+
+    public int getNbSommet() {
+        return nbSommet;
+    }
+
+    public int getNbAretes() {
+        return nbAretes;
+    }
+
+    public int getDegre() {
+        return degre;
+    }
+
+    public void setAretes_tab(int[][] aretes_tab) {
+        this.aretes_tab = aretes_tab;
+    }
 }

@@ -1,41 +1,22 @@
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class Main {
 
     public static void main(String[] args) {
-        testExample();
-        testExample2();
+        //testExample();
+        //testExample2();
         //testRandom(10, 20);
-    }
-
-    /**
-     * Construire des instances al´eatoires pour le problème
-     * @param p Nombre des sous-ensembles
-     * @param t Nombre sommet pour chaque sous-ensemble
-     * @return ArrayList
-     */
-    public static ArrayList<Composante> randomGen(int p, int t){
-        if(p>100 || p<1 || t<1){
-            return null;
-        }else{
-            ArrayList<Composante> composantes = new ArrayList<>();
-            for(int i=0; i<t; i++){
-                Composante c = new Composante();
-                ArrayList<Sommet> sommets = new ArrayList<>();
-                for(int s=1; s<100; s++){
-                    sommets.add(new Sommet(s));
-                }
-                Collections.shuffle(sommets);
-                for(int j=0; j<p; j++){
-                    c.ajouter_sommet(sommets.remove(j));
-                }
-                composantes.add(c);
+        for(int i=260; i<360; i+=10){
+            for(int j=10; j<21; j++){
+                //System.out.print("f["+i+"]["+j+"]: ");
+                testPourcentage(1, 20, 20, i, j);
             }
-            // Afficher informations ce qu'on vient de créer
-            showComposantes(composantes);
-            return composantes;
         }
+
+
     }
 
     /**
@@ -80,12 +61,16 @@ public class Main {
         composantes.add(c4);
         Graphe g = new Graphe();
 
-        showComposantes(composantes);
+        Utils.showComposantes(composantes);
+        System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, on a besoin de: ");
+        System.out.println("Minimum "+Utils.calculerNbAretesMin(composantes)+" et Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
+        System.out.println("Minimum "+Utils.calculerDegreeMin(composantes)+" et Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
+
         System.out.println();
-        System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(6, 5, composantes));
-        System.out.println("Etant donnée k=9, delta=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(9, 6, composantes));
-        System.out.println("Etant donnée k=9, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(9, 7, composantes));
-        System.out.println("Etant donnée k=10, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(10, 7, composantes));
+        System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(6, 5, composantes));
+        System.out.println("Etant donnée k=9, delta=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(9, 6, composantes));
+        System.out.println("Etant donnée k=9, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(9, 7, composantes));
+        System.out.println("Etant donnée k=10, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(10, 7, composantes));
         System.out.println();
 
         g.buildGraphe(composantes);
@@ -138,13 +123,16 @@ public class Main {
         composantes.add(c4);
         Graphe g = new Graphe();
 
-        showComposantes(composantes);
+        Utils.showComposantes(composantes);
+        System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, on a besoin de: ");
+        System.out.println("Minimum "+Utils.calculerNbAretesMin(composantes)+" et Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
+        System.out.println("Minimum "+Utils.calculerDegreeMin(composantes)+" et Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
 
         System.out.println();
-        System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(6, 5, composantes));
-        System.out.println("Etant donnée k=9, delta=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(9, 6, composantes));
-        System.out.println("Etant donnée k=9, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(9, 7, composantes));
-        System.out.println("Etant donnée k=10, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+g.checkICProblem_Decision(10, 7, composantes));
+        System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(6, 5, composantes));
+        System.out.println("Etant donnée k=9, delta=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(9, 6, composantes));
+        System.out.println("Etant donnée k=9, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(9, 7, composantes));
+        System.out.println("Etant donnée k=10, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(10, 7, composantes));
         System.out.println();
 
         g.buildGraphe(composantes);
@@ -155,32 +143,57 @@ public class Main {
     }
 
     /**
-     * Tester en utilisant la méthode randomGen
+     * Tester en utilisant la méthode randomGen (Générer automatiquement des composantes)
+     * @param p: Nombre de sommets pour chaque composante
+     * @param t: Nombre de composantes
      */
     public static void testRandom(int p, int t){
         ArrayList<Composante> composantes = new ArrayList<>();
-        composantes = randomGen(p, t);
+        composantes = Utils.randomGen(p, t);
         Graphe g = new Graphe();
         g.buildGraphe(composantes);
+        /*
         System.out.println(g.toString());
         System.out.println();
         System.out.println("****************************************************************");
         System.out.println();
+        */
     }
 
     /**
-     * Afficher les composantes créées
+     * Evaluer l’efficacité de l'algorithme choisi - Calculer le pourcentage d’instances pour lesquelles l'algorithme choisi a trouvé une solution.
+     * @param version: Version de l'algorithme afin de monter le graphe
+     * @param p: Nombre de sommet pour chaque composante
+     * @param t: Nombre de composante
+     * @param k: Nombre d'arête maximum pour problème
+     * @param delta: Degré maximum p pour problème
      */
-    public static void showComposantes(ArrayList<Composante> composantes){
-        System.out.println("Vous venez de créer "+ composantes.size() +" sous-ensembles");
-        for (Composante c: composantes){
-            System.out.print("[");
-            for(Sommet s: c.getSommets()){
-                if(c.getSommets().lastIndexOf(s) == c.getSommets().size()-1)
-                    System.out.print(s.getValue());
-                else System.out.print(s.getValue()+", ");
+    public static void testPourcentage(int version, int p, int t, int k, int delta){
+        int res=0;
+        for(int i=0; i<100; i++){
+            ArrayList<Composante> composantes = new ArrayList<>();
+            composantes = Utils.randomGen(p, t);
+            Graphe g = new Graphe();
+            switch (version){
+                case 1: g.buildGraphe(composantes); break;
+                case 2: g.buildGraphe2(composantes); break;
+                default: System.out.print("Error version to build - version does not exist"); System.exit(0);
             }
-            System.out.println("]");
+            g.buildGraphe(composantes);
+
+            System.out.println("Nb Sommet: "+g.getNbSommet()+" --- Nb Arete: "+g.getNbAretes()+ " --- Degree: "+g.getDegre());
+            System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, on a besoin de: ");assert composantes != null;
+            System.out.println("Minimum "+Utils.calculerNbAretesMin(composantes)+" et Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
+            System.out.println("Minimum "+Utils.calculerDegreeMin(composantes)+" et Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
+            System.out.println();
+
+            if(g.getNbAretes()<=k && g.getDegre()<=delta)
+                res+=1;
         }
+
+        System.out.println("Pourcentage: "+res);
     }
+
+
+
 }
