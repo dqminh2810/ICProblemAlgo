@@ -6,9 +6,12 @@ import java.util.Collections;
 public class Main {
 
     public static void main(String[] args) {
+
+
         //testExample();
         //testExample2();
         //testRandom(10, 20);
+
 
 
         for(int i=530; i<640; i+=10){
@@ -61,22 +64,27 @@ public class Main {
         composantes.add(c2);
         composantes.add(c3);
         composantes.add(c4);
-        Graphe g = new Graphe();
+        Graphe g = new Graphe(9, 9);
 
         Utils.showComposantes(composantes);
-        System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, il nous faut de: ");
-        System.out.println("Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
-        System.out.println("Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
 
-        System.out.println();
-        System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(6, 5, composantes));
-        System.out.println("Etant donnée k=9, delta=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(9, 6, composantes));
-        System.out.println("Etant donnée k=9, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(9, 7, composantes));
-        System.out.println("Etant donnée k=10, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(10, 7, composantes));
-        System.out.println();
 
         g.buildGraphe(composantes);
-        System.out.print(g.toString());
+        System.out.println(g.toString());
+        for(int i=1; i<g.getAretes_tab().length; i++){
+            for(int j=1; j<g.getAretes_tab().length; j++){
+                System.out.print(g.getAretes_tab()[i][j] + ", ");
+            }
+            System.out.print("\n");
+        }
+        g.buildGraphe2(composantes);
+        System.out.println(g.toString());
+        for(int i=1; i<g.getAretes_tab().length; i++){
+            for(int j=1; j<g.getAretes_tab().length; j++){
+                System.out.print(g.getAretes_tab()[i][j] + ", ");
+            }
+            System.out.print("\n");
+        }
         System.out.println();
         System.out.println("****************************************************************");
         System.out.println();
@@ -126,16 +134,6 @@ public class Main {
         Graphe g = new Graphe();
 
         Utils.showComposantes(composantes);
-        System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, il nous faut de: ");
-        System.out.println("Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
-        System.out.println(" Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
-
-        System.out.println();
-        System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(6, 5, composantes));
-        System.out.println("Etant donnée k=9, delta=6 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(9, 6, composantes));
-        System.out.println("Etant donnée k=9, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(9, 7, composantes));
-        System.out.println("Etant donnée k=10, delta=7 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(10, 7, composantes));
-        System.out.println();
 
         g.buildGraphe(composantes);
         System.out.print(g.toString());
@@ -172,7 +170,7 @@ public class Main {
      */
     public static void testPourcentage(int version, int p, int t, int k, int delta){
         int res=0;
-        for(int i=0; i<100; i++){
+        for(int i=0; i<1000; i++){
             ArrayList<Composante> composantes = new ArrayList<>();
             composantes = Utils.randomGen(p, t);
             Graphe g = new Graphe();
@@ -191,11 +189,11 @@ public class Main {
             System.out.println();
             */
             //if nbAretes<=k && nbAretes<=kmax && Degree<=delta && Degree<=deltaMax
-            if((g.getNbAretes()<=k && g.getNbAretes()<=Utils.calculerNbAretesMax(composantes)) && (g.getDegre()<=delta && g.getDegre()<=Utils.calculerDegreeMax(composantes)))
+            if((g.getNbAretes()<=k && (g.getDegre()<=delta)))
                 res+=1;
         }
 
-        System.out.println("Pourcentage: "+res);
+        System.out.println("Pourcentage: "+res/10);
     }
 
 

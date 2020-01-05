@@ -45,7 +45,7 @@ public final class Utils {
      * Calculer nombre maximum d'arêtes à parir des composantes données afin de créer un graphe pour le problème IC
      * @return int
      */
-    public static int calculerNbAretesMax(ArrayList<Composante> composantes){
+    public static int calculerNbAretesMin_Minimisation(ArrayList<Composante> composantes){
         int kMax=0;
         for(Composante c: composantes){
             kMax+=c.getSommets().size()-1;
@@ -71,29 +71,28 @@ public final class Utils {
 
     /**
      * Construire des instances aléatoires (des composantes) pour le problème IC
-     * @param p Nombre des sous-ensembles
-     * @param t Nombre sommet pour chaque sous-ensemble
+     * On veux créer t composantes, chacune contient p sommets ayant valeur de 1 à 100
+     * @param p Nombre sommet pour chaque sous-ensemble
+     * @param t Nombre des sous-ensembles
      * @return ArrayList
      */
     public static ArrayList<Composante> randomGen(int p, int t){
-        if(p>100 || p<1 || t<1){
+        if(p>100 || p<1 || t<1){    //Vérifier conditions des instances
             return null;
         }else{
-            ArrayList<Composante> composantes = new ArrayList<>();
-            for(int i=0; i<t; i++){
-                Composante c = new Composante();
+            ArrayList<Composante> composantes = new ArrayList<>();  //Liste des composantes
+            for(int i=0; i<t; i++){     //On veux créer t composantes
+                Composante c = new Composante();    //Créer composante
                 ArrayList<Sommet> sommets = new ArrayList<>();
-                for(int s=1; s<100; s++){
+                for(int s=1; s<100; s++){       //Créer 100 sommets ayant valeur de 1 à 100
                     sommets.add(new Sommet(s));
                 }
-                Collections.shuffle(sommets);
-                for(int j=0; j<p; j++){
+                Collections.shuffle(sommets);   //Mélanger les sommets
+                for(int j=0; j<p; j++){         //Ajouter p sommets aléatoire dans la composante
                     c.ajouter_sommet(sommets.remove(j));
                 }
-                composantes.add(c);
+                composantes.add(c);     //Ajouter composante créé dans la liste
             }
-            // Afficher informations ce qu'on vient de créer
-            //showComposantes(composantes);
             return composantes;
         }
     }
@@ -104,14 +103,14 @@ public final class Utils {
      * @param delta Degré
      * @param composantes des sous-ensemble qui contient des sommets
      */
-    public static boolean checkICProblem_Decision(int k, int delta, ArrayList<Composante> composantes){
+    public static boolean checkICProblem_Minimisation(int k, int delta, ArrayList<Composante> composantes){
         int kMin=0, kMax=0, deltaMin=0, deltaMax=0;
         //Check k value - le plus grand k possible
-        kMax = Utils.calculerNbAretesMax(composantes);
+        kMin = Utils.calculerNbAretesMin_Minimisation(composantes);
         //Check delta value - le plus grand delta possible
         deltaMax = Utils.calculerDegreeMax(composantes);
 
-        return (k<=kMax && delta<=deltaMax);
+        return (k>=kMin && delta<=deltaMax);
     }
     /**
      * Calculer degré minimum à parir des composantes données afin de créer un graphe pour le problème IC
