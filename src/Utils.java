@@ -42,35 +42,6 @@ public final class Utils {
     }
 
     /**
-     * Calculer degré minimum à parir des composantes données afin de créer un graphe pour le problème IC
-     * @return int
-     */
-    public static int calculerDegreeMin(ArrayList<Composante> composantes){
-        //HashMap <Sommet, Nb intersection>
-        HashMap<Integer, Integer> tmp = new HashMap<>();
-        for(Composante c: composantes){
-            c.getSommets().forEach(s -> {tmp.put(s.getValue(), 0);});
-        }
-
-        for(Composante c: composantes){
-            for(Sommet s: c.getSommets()){
-                for (int key: tmp.keySet()){
-                    if(s.getValue() == key){
-                        tmp.put(key, tmp.get(key)+1);
-                    }
-                }
-            }
-        }
-
-        //Intersection so -1
-        tmp.forEach((k, v)->{
-            tmp.put(k, v-1);
-        });
-
-        return Collections.max(tmp.values());
-    }
-
-    /**
      * Calculer nombre maximum d'arêtes à parir des composantes données afin de créer un graphe pour le problème IC
      * @return int
      */
@@ -80,14 +51,6 @@ public final class Utils {
             kMax+=c.getSommets().size()-1;
         }
         return kMax;
-    }
-
-    /**
-     * Calculer nombre d'arêtes à parir des composantes données afin de créer un graphe pour le problème IC
-     * @return int
-     */
-    public static int calculerNbAretesMin(ArrayList<Composante> composantes){
-        return Utils.calculerNbAretesMax(composantes) - Utils.calculerDegreeMin(composantes);
     }
 
     /**
@@ -150,5 +113,45 @@ public final class Utils {
 
         return (k<=kMax && delta<=deltaMax);
     }
+    /**
+     * Calculer degré minimum à parir des composantes données afin de créer un graphe pour le problème IC
+     * @return int
+     */
+    /*
+    public static int calculerDegreeMin(ArrayList<Composante> composantes){
+        //HashMap <Sommet, Nb intersection>
+        HashMap<Integer, Integer> tmp = new HashMap<>();
+        for(Composante c: composantes){
+            c.getSommets().forEach(s -> {tmp.put(s.getValue(), 0);});
+        }
+
+        for(Composante c: composantes){
+            for(Sommet s: c.getSommets()){
+                for (int key: tmp.keySet()){
+                    if(s.getValue() == key){
+                        tmp.put(key, tmp.get(key)+1);
+                    }
+                }
+            }
+        }
+
+        //Intersection so -1
+        tmp.forEach((k, v)->{
+            tmp.put(k, v-1);
+        });
+
+        return Collections.max(tmp.values());
+    }
+    */
+    /**
+     * Calculer nombre d'arêtes à parir des composantes données afin de créer un graphe pour le problème IC
+     * @return int
+     */
+    /*
+    public static int calculerNbAretesMin(ArrayList<Composante> composantes){
+        return Utils.calculerNbAretesMax(composantes) - Utils.calculerDegreeMin(composantes);
+    }
+    */
+
 
 }

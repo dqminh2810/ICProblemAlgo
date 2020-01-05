@@ -9,10 +9,12 @@ public class Main {
         //testExample();
         //testExample2();
         //testRandom(10, 20);
-        for(int i=260; i<360; i+=10){
-            for(int j=10; j<21; j++){
-                //System.out.print("f["+i+"]["+j+"]: ");
-                testPourcentage(1, 20, 20, i, j);
+
+
+        for(int i=530; i<640; i+=10){
+            for(int j=17; j<28; j++){
+                System.out.print("f["+i+"]["+j+"]: ");
+                testPourcentage(2, 20, 30, i, j);
             }
         }
 
@@ -62,9 +64,9 @@ public class Main {
         Graphe g = new Graphe();
 
         Utils.showComposantes(composantes);
-        System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, on a besoin de: ");
-        System.out.println("Minimum "+Utils.calculerNbAretesMin(composantes)+" et Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
-        System.out.println("Minimum "+Utils.calculerDegreeMin(composantes)+" et Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
+        System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, il nous faut de: ");
+        System.out.println("Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
+        System.out.println("Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
 
         System.out.println();
         System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(6, 5, composantes));
@@ -124,9 +126,9 @@ public class Main {
         Graphe g = new Graphe();
 
         Utils.showComposantes(composantes);
-        System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, on a besoin de: ");
-        System.out.println("Minimum "+Utils.calculerNbAretesMin(composantes)+" et Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
-        System.out.println("Minimum "+Utils.calculerDegreeMin(composantes)+" et Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
+        System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, il nous faut de: ");
+        System.out.println("Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
+        System.out.println(" Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
 
         System.out.println();
         System.out.println("Etant donnée k=6, delta=5 et des sous-ensemble créés. Existe-il une solution pour le problème IC : "+Utils.checkICProblem_Decision(6, 5, composantes));
@@ -180,14 +182,16 @@ public class Main {
                 default: System.out.print("Error version to build - version does not exist"); System.exit(0);
             }
             g.buildGraphe(composantes);
-
+            /*
             System.out.println("Nb Sommet: "+g.getNbSommet()+" --- Nb Arete: "+g.getNbAretes()+ " --- Degree: "+g.getDegre());
-            System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, on a besoin de: ");assert composantes != null;
-            System.out.println("Minimum "+Utils.calculerNbAretesMin(composantes)+" et Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
-            System.out.println("Minimum "+Utils.calculerDegreeMin(composantes)+" et Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
-            System.out.println();
+            System.out.println("Pour monter un graphe connexe à partir de ces sous-ensembles, il nous faut de: ");assert composantes != null;
+            System.out.println("Maximum "+Utils.calculerNbAretesMax(composantes)+" arêtes");
+            System.out.println("Maximum "+Utils.calculerDegreeMax(composantes)+" degré");
 
-            if(g.getNbAretes()<=k && g.getDegre()<=delta)
+            System.out.println();
+            */
+            //if nbAretes<=k && nbAretes<=kmax && Degree<=delta && Degree<=deltaMax
+            if((g.getNbAretes()<=k && g.getNbAretes()<=Utils.calculerNbAretesMax(composantes)) && (g.getDegre()<=delta && g.getDegre()<=Utils.calculerDegreeMax(composantes)))
                 res+=1;
         }
 

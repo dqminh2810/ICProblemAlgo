@@ -135,7 +135,6 @@ public class Graphe {
         for(Composante c: composantes){
             c.getSommets().forEach(s -> {tmp.put(s.getValue(), 0);});
         }
-
         return tmp.size();
     }
 
@@ -168,7 +167,6 @@ public class Graphe {
                 if(aretes_tab[i][j]!=-1){
                     tmp.put(i, total+=aretes_tab[i][j]);
                 }
-
             }
         }
         return Collections.max(tmp.values());
